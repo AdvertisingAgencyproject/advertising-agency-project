@@ -6,5 +6,6 @@ public class Favor : BaseEntity
     public string Type { get; set; }
     public string ImagePath { get; set; }
     public int Price { get; set; }
+    public virtual Discount Discount { get; set; }
     public virtual ICollection<FavorOrder> FavorOrders { get; set; }
 }

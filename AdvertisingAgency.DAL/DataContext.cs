@@ -12,4 +12,5 @@ public class DataContext : DbContext
     public virtual DbSet<Favor> Favors { get; set; }
     public virtual DbSet<ProductOrder> ProductOrders { get; set; }
     public virtual DbSet<FavorOrder> FavorOrders { get; set; }
+    public virtual DbSet<Discount> Discounts { get; set; }
 }

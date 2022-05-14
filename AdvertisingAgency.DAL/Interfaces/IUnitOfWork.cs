@@ -9,4 +9,5 @@ public interface IUnitOfWork
     IRepository<Favor> FavorRepository { get; }
     IRepository<ProductOrder> ProductOrderRepository { get; }
     IRepository<FavorOrder> FavorOrderRepository { get; }
+    IRepository<Discount> DiscountRepository { get; }
 }

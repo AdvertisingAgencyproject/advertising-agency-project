@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Favor> FavorRepository { get; private set; }
     public IRepository<ProductOrder> ProductOrderRepository { get; private set; }
     public IRepository<FavorOrder> FavorOrderRepository { get; private set; }
+    public IRepository<Discount> DiscountRepository { get; private set; }
 
     public UnitOfWork(DataContext context)
     {
@@ -19,5 +20,6 @@ public class UnitOfWork : IUnitOfWork
         FavorRepository = new GenericRepository<Favor>(context);
         ProductOrderRepository = new GenericRepository<ProductOrder>(context);
         FavorOrderRepository = new GenericRepository<FavorOrder>(context);
+        DiscountRepository = new GenericRepository<Discount>(context);
     }
 }

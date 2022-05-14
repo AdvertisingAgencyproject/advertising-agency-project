@@ -24,7 +24,8 @@ public static class FavorMappers
             ImagePath = entity.ImagePath,
             Title = entity.Title,
             Type = entity.Type,
-            Price = entity.Price
+            Price = entity.Price,
+            DiscountPercents = entity.Discount?.Percents
         };
     }
 
@@ -36,6 +37,7 @@ public static class FavorMappers
             ImagePath = t.ImagePath,
             Title = t.Title,
             Type = t.Type,
+            DiscountPercents = t.Discount?.Percents,
             Price = t.Price
         }).ToList();
     }

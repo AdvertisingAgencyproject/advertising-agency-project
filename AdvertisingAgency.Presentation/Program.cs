@@ -6,6 +6,7 @@ using AdvertisingAgency.BLL.Services;
 using AdvertisingAgency.DAL;
 using AdvertisingAgency.DAL.Interfaces;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +22,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
     });
 });
-builder.Services.AddSwaggerDocument();
+builder.Services.AddSwaggerDoc();
 var connectionString = builder.Configuration.GetSection("ConnectionString").Value;
 builder.Services.AddDbContext<DataContext>(a => a.UseSqlServer(connectionString,
                                            b => b.MigrationsAssembly("AdvertisingAgency.Presentation")));
@@ -69,7 +70,6 @@ app.UseFastEndpoints();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseFileServer();
-app.UseSwagger();
 app.UseOpenApi();
-app.UseSwaggerUi3();
+app.UseSwaggerUi3(s => s.ConfigureDefaults());
 app.Run();

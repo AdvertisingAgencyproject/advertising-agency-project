@@ -1,10 +1,11 @@
 ﻿using AdvertisingAgency.BLL.Interfaces;
+using AdvertisingAgency.BLL.Models.Requests;
 using AdvertisingAgency.BLL.Models.Responses;
 using FastEndpoints;
 
 namespace AdvertisingAgency.Presentation.Endpoints.Product;
 
-public class GetProductsEndpoint : EndpointWithoutRequest<List<ProductResponse>>
+public class GetProductsEndpoint : Endpoint<ProductFilterRequest, List<ProductResponse>>
 {
     private readonly IProductService _productService;
 
@@ -13,10 +14,10 @@ public class GetProductsEndpoint : EndpointWithoutRequest<List<ProductResponse>>
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("api/products");
+        Routes("api/products/{searchQuery}/{minPrice}/{maxPrice}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CancellationToken ct) 
-        => await SendAsync(await _productService.GetProductsAsync());
+    public override async Task HandleAsync(ProductFilterRequest req, CancellationToken ct) 
+        => await SendAsync(await _productService.GetProductsAsync(req));
 }

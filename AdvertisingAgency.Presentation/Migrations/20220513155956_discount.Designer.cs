@@ -4,6 +4,7 @@ using AdvertisingAgency.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvertisingAgency.Presentation.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220513155956_discount")]
+    partial class discount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,19 +29,19 @@ namespace AdvertisingAgency.Presentation.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FavorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Percents")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("FavorId")
+                    b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Discounts");
+                    b.ToTable("Discount");
                 });
 
             modelBuilder.Entity("AdvertisingAgency.DAL.Entities.Favor", b =>
@@ -183,13 +185,13 @@ namespace AdvertisingAgency.Presentation.Migrations
 
             modelBuilder.Entity("AdvertisingAgency.DAL.Entities.Discount", b =>
                 {
-                    b.HasOne("AdvertisingAgency.DAL.Entities.Favor", "Favor")
+                    b.HasOne("AdvertisingAgency.DAL.Entities.Product", "Product")
                         .WithOne("Discount")
-                        .HasForeignKey("AdvertisingAgency.DAL.Entities.Discount", "FavorId")
+                        .HasForeignKey("AdvertisingAgency.DAL.Entities.Discount", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Favor");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("AdvertisingAgency.DAL.Entities.FavorOrder", b =>
@@ -232,14 +234,14 @@ namespace AdvertisingAgency.Presentation.Migrations
 
             modelBuilder.Entity("AdvertisingAgency.DAL.Entities.Favor", b =>
                 {
-                    b.Navigation("Discount")
-                        .IsRequired();
-
                     b.Navigation("FavorOrders");
                 });
 
             modelBuilder.Entity("AdvertisingAgency.DAL.Entities.Product", b =>
                 {
+                    b.Navigation("Discount")
+                        .IsRequired();
+
                     b.Navigation("ProductOrders");
                 });
 

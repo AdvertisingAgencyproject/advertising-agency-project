@@ -1,2 +1,17 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">ERROR</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">ERROR</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=cfa01eca_002D85e2_002D4aa0_002D810e_002D10c833f481dc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.ProductServiceTests.GetProductTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.ProductServiceTests.GetProductsTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.ProductServiceTests.UpdateProductTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.ProductServiceTests.DeleteProductTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.FavorServiceTests.GetProductTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.FavorServiceTests.GetFavorTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.FavorServiceTests.GetFavorsTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.FavorServiceTests.UpdateFavorTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.FavorServiceTests.DeleteFavorTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.AuthServiceTests.RegisterTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::363362D1-3A04-45FD-8BA0-3CAF709114EE::net6.0::AdvertisingAgency.Tests.Tests.AuthServiceTests.LoginAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AdvertisingAgency.BLL.Interfaces;
 using AdvertisingAgency.BLL.Models.Requests;
 using AdvertisingAgency.BLL.Services;
@@ -11,110 +10,110 @@ using Xunit;
 
 namespace AdvertisingAgency.Tests.Tests;
 
-public class ProductServiceTests
+public class FavorServiceTests
 {
-    private readonly IProductService _productService;
+    private readonly IFavorService _favorService;
     private readonly IUnitOfWork _unitOfWork;
     
-    public ProductServiceTests()
+    public FavorServiceTests()
     {
         var dbOptions = new DbContextOptionsBuilder<DataContext>()
-            .UseInMemoryDatabase("ProductServiceTestsDb")
+            .UseInMemoryDatabase("FavorServiceTestsDb")
             .Options;
         var dbContext = new DataContext(dbOptions);
         _unitOfWork = new UnitOfWork(dbContext);
-        _productService = new ProductService(_unitOfWork);
+        _favorService = new FavorService(_unitOfWork);
     }
-
+    
     [Fact]
-    public async Task GetProductTest()
+    public async Task GetFavorTest()
     {
         //Arrange
-        await _unitOfWork.ProductRepository.InsertAsync(new Product
+        await _unitOfWork.FavorRepository.InsertAsync(new Favor
+        {
+            Id = "777",
+            Title = "Test",
+            Type = "Test",
+            ImagePath = "Test",
+            Price = 100
+        });
+        //Act
+        var result = await _favorService.GetFavorByIdAsync("777");
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal("777", result.Id);
+    }
+    
+    [Fact]
+    public async Task GetFavorsTest()
+    {
+        //Arrange
+        await _unitOfWork.FavorRepository.InsertAsync(new Favor
         {
             Id = "1",
-            Text = "Test",
+            Title = "Test",
+            Type = "Test",
+            ImagePath = "Test",
+            Price = 100
+        });
+        await _unitOfWork.FavorRepository.InsertAsync(new Favor
+        {
+            Id = "2",
+            Title = "Test",
             Type = "Test",
             ImagePath = "Test",
             Price = 100
         });
         //Act
-        var result = await _productService.GetProductByIdAsync("1");
-        //Assert
-        Assert.NotNull(result);
-        Assert.Equal("1", result.Id);
-    }
-
-    [Fact]
-    public async Task GetProductsTest()
-    {
-        //Arrange
-        await _unitOfWork.ProductRepository.InsertAsync(new Product
-        {
-            Id = "11",
-            Text = "Test",
-            Type = "Test",
-            ImagePath = "Test",
-            Price = 100
-        });
-        await _unitOfWork.ProductRepository.InsertAsync(new Product
-        {
-            Id = "22",
-            Text = "Test",
-            Type = "Test",
-            ImagePath = "Test",
-            Price = 150
-        });
-        //Act
-        var result = await _productService.GetProductsAsync();
+        var result = await _favorService.GetFavorsAsync();
         //Assert
         Assert.NotNull(result);
     }
-
+    
     [Fact]
-    public async Task UpdateProductTest()
+    public async Task UpdateFavorTest()
     {
         //Arrange
-        await _unitOfWork.ProductRepository.InsertAsync(new Product
+        await _unitOfWork.FavorRepository.InsertAsync(new Favor
         {
             Id = "3",
-            Text = "Test",
+            Title = "Test",
             Type = "Test",
             ImagePath = "Test",
             Price = 25
         });
-        var request = new ProductUpdateRequest
+        var request = new FavorUpdateRequest
         {
             Id = "3",
-            Text = "Updated",
+            Title = "Updated",
             Type = "Test",
             ImagePath = "Test",
             Price = 25
         };
         //Act
-        await _productService.UpdateProductAsync(request);
+        await _favorService.UpdateFavorAsync(request);
         //Assert
-        var result = await _unitOfWork.ProductRepository.GetByIdAsync("3");
+        var result = await _unitOfWork.FavorRepository.GetByIdAsync("3");
         Assert.NotNull(result);
-        Assert.Equal(request.Text, result.Text);
+        Assert.Equal(request.Title, result.Title);
     }
-
+    
     [Fact]
-    public async Task DeleteProductTest()
+    public async Task DeleteFavorTest()
     {
         //Arrange
-        await _unitOfWork.ProductRepository.InsertAsync(new Product
+        await _unitOfWork.FavorRepository.InsertAsync(new Favor
         {
             Id = "4",
-            Text = "Test",
+            Title = "Test",
             Type = "Test",
             ImagePath = "Test",
             Price = 25
         });
         //Act
-        await _productService.DeleteProductAsync("4");
+        await _favorService.DeleteFavorAsync("4");
         //Assert
-        var result = await _unitOfWork.ProductRepository.GetByIdAsync("4");
+        var result = await _unitOfWork.FavorRepository.GetByIdAsync("4");
         Assert.Null(result);
     }
 }

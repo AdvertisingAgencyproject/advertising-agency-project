@@ -33,9 +33,18 @@ public class ProductService : IProductService
         return entity.MapToResponse();
     }
 
-    public async Task<List<ProductResponse>> GetProductsAsync()
+    public async Task<List<ProductResponse>> GetProductsAsync(ProductFilterRequest model)
     {
         var entities = await _unitOfWork.ProductRepository.GetAllAsync();
+        if (model.SearchQuery != "%default%")
+        {
+            entities = entities.Where(t => t.Text.ToUpper().Contains(model.SearchQuery.ToUpper()))
+                               .ToList();
+        }
+        
+        entities = entities.Where(t => t.Price >= model.MinPrice && t.Price <= model.MaxPrice)
+                           .ToList();
+        
         return entities.MapToResponseList();
     }
 
@@ -51,5 +60,23 @@ public class ProductService : IProductService
         var entity = await _unitOfWork.ProductRepository.GetByIdAsync(id);
         var result = await _unitOfWork.ProductRepository.DeleteAsync(entity);
         if (!result) throw new HttpException(HttpStatusCode.InternalServerError, "Server error");
+    }
+
+    public async Task<ProductFilterResponse> GetProductFiltersAsync()
+    {
+        var products = await _unitOfWork.ProductRepository.GetAllAsync();
+        var types = String.Join('%', products.Select(t => t.Type));
+            
+        return new ProductFilterResponse
+        {
+            MinPrice = products.Select(t => t.Price).Min(),
+            MaxPrice = products.Select(t => t.Price).Max()
+        };
+    }
+
+    public async Task<List<ProductResponse>> GetProductsAsync()
+    {
+        var products = await _unitOfWork.ProductRepository.GetAllAsync();
+        return products.MapToResponseList();
     }
 }

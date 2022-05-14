@@ -5,6 +5,7 @@ using AdvertisingAgency.BLL.Interfaces;
 using AdvertisingAgency.BLL.Mappers;
 using AdvertisingAgency.BLL.Models.Requests;
 using AdvertisingAgency.BLL.Models.Responses;
+using AdvertisingAgency.DAL.Entities;
 using AdvertisingAgency.DAL.Interfaces;
 
 namespace AdvertisingAgency.BLL.Services;
@@ -50,6 +51,19 @@ public class FavorService : IFavorService
     {
         var entity = await _unitOfWork.FavorRepository.GetByIdAsync(id);
         var result = await _unitOfWork.FavorRepository.DeleteAsync(entity);
+        if (!result) throw new HttpException(HttpStatusCode.InternalServerError, "Server error");
+    }
+
+    public async Task AddDiscountToFavorAsync(string favorId, int percents)
+    {
+        var entity = new Discount
+        {
+            Id = Guid.NewGuid().ToString(),
+            FavorId = favorId,
+            Percents = percents
+        };
+
+        var result = await _unitOfWork.DiscountRepository.InsertAsync(entity);
         if (!result) throw new HttpException(HttpStatusCode.InternalServerError, "Server error");
     }
 }

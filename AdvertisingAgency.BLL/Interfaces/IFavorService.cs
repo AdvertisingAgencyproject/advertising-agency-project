@@ -10,4 +10,5 @@ public interface IFavorService
     Task<List<FavorResponse>> GetFavorsAsync();
     Task UpdateFavorAsync(FavorUpdateRequest model);
     Task DeleteFavorAsync(string id);
+    Task AddDiscountToFavorAsync(string favorId, int percents);
 }
