@@ -7,13 +7,15 @@ export class AuthStore{
  
     isAuthenticated = !!initialToken;
     isLoading = false;
-    
+    token = localStorage.getItem('token');
+
     constructor(){
         makeAutoObservable(this);
     }
 
-    setIsAuthenticated(payload){
+    setIsAuthenticated(payload, token){
         this.isAuthenticated = payload;
+        this.token = token;
     }
 
     getUserEmail(){
@@ -27,6 +29,11 @@ export class AuthStore{
     isAdmin(){
         const token = localStorage.getItem('token');
         return (token !== null ? jwtDecode(token).role === 'admin' : false);
+    }
+
+    isManager(){
+        const token = localStorage.getItem('token');
+        return (token !== null ? jwtDecode(token).role === 'manager' : false);
     }
 
     reset(){

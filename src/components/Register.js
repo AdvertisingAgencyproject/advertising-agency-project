@@ -12,7 +12,7 @@ const Register = observer(() => {
     const register = () => {
         axios.post('https://localhost:7146/api/register', model).then(response => {
             localStorage.setItem('token', response.data.token);
-            authStore.setIsAuthenticated(true);
+            authStore.setIsAuthenticated(true, response.data.token);
             if(authStore.isAdmin()){
                 navigate('/admin');
             }else{

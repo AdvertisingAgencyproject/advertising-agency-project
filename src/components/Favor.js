@@ -8,8 +8,16 @@ const Favor = observer(props => {
             <div className="text-black text-2xl">{props.title}</div>
             <div className="text-black">{props.type}</div>
             <div className="grid grid-cols-2 items-center">
-                <div className="text-black text-lg text-left font-bold">{props.price} $</div>
-                { authStore.isAuthenticated && <button onClick={() => props.openModal(props.id, props.price)} className="bg-green-600 hover:bg-green-500 px-3 py-2 rounded shadow-md text-white float-right">Order</button> }
+                {
+                    props.discountPercents == null
+                    ? <div className="text-black text-lg text-left font-bold">{props.price} $</div>
+                    : <div>
+                        <div className="text-black text-lg text-left font-bold">{props.price * props.discountPercents / 100} $</div> 
+                        <div className="text-black text-sm text-left font-bold line-through">{props.price} $</div>
+                      </div>
+                }
+                
+                { authStore.isAuthenticated && <button onClick={() => props.openModal(props.id)} className="bg-green-600 hover:bg-green-500 px-3 py-2 rounded shadow-md text-white float-right">Order</button> }
             </div>
         </div>
     );

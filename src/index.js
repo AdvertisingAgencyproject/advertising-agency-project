@@ -6,7 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import 'antd/dist/antd.css';
 import axios from 'axios';
 
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+axios.interceptors.request.use(
+  async config => {
+    
+    config.headers = { 
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+    return config;
+  },
+  error => {
+    Promise.reject(error)
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -12,12 +12,16 @@ const Login = observer(() => {
     const login = () => {
         axios.post('https://localhost:7146/api/login', model).then(response => {
             localStorage.setItem('token', response.data.token);
-            authStore.setIsAuthenticated(true);
+            authStore.setIsAuthenticated(true, response.data.token);
             if(authStore.isAdmin()){
                 navigate('/admin');
-            }else{
-                navigate('/');
+                return;
             }
+            if(authStore.isManager()){
+                navigate('/manager');
+                return;
+            }
+            navigate('/');
             toast.success('Successfully logged in');
         }).catch(error => {
             console.log("Error here");

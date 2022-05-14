@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 
 const FavorsAdmin = observer(() => {
 
+    const [discountModalVisible, setDiscountModalVisible] = useState(false);
+    const [discountModel, setDiscountModel] = useState({ favorId: '', percents: ''});
     const [postModalVisible, setPostModalVisible] = useState(false);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
     const [favorPostModel, setfavorPostModel] = useState({ title: '', type: '', base64: '', price: '' });
@@ -42,7 +44,8 @@ const FavorsAdmin = observer(() => {
                         setfavorUpdateModel(record);
                         setUpdateModalVisible(true);
                     }} className="bg-amber-500 text-white px-3 py-1 rounded mr-2">Update</button>
-                    <button onClick={() => deletefavor(record.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+                    <button onClick={() => deletefavor(record.id)} className="bg-red-500 text-white px-3 py-1 rounded mr-2">Delete</button>
+                    { record.discountPercents === null && <button onClick={() => openDiscountAddModal(record.id)} className="bg-green-500 text-white px-3 py-1 rounded">Set discount</button> }
                 </div>
             )
         }
@@ -89,6 +92,21 @@ const FavorsAdmin = observer(() => {
         }).catch(error => {
             toast.error('Server error');
         });
+    }
+
+    const openDiscountAddModal = favorId => {
+        setDiscountModel({...discountModel, favorId });
+        setDiscountModalVisible(true);
+    }
+
+    const addDiscountToFavor = () => {
+        axios.post('https://localhost:7146/api/favor/discount', discountModel).then(response => {
+            axios.get('https://localhost:7146/api/favors').then(response => {
+                setfavors(response.data);
+            });
+        });
+        setDiscountModalVisible(false);
+        toast.success('Discount created succesfully');
     }
 
     const getBase64 = e => {
@@ -173,6 +191,11 @@ const FavorsAdmin = observer(() => {
                                onChange={e => setfavorPostModel({ ...favorPostModel, price: e.target.value })}
                         />
                     </div>
+                </div>
+            </Modal>
+            <Modal visible={discountModalVisible} onOk={addDiscountToFavor} onCancel={() => setDiscountModalVisible(false)}>
+                <div className="px-5 py-3">
+                    <input type="number" placeholder="Percents" value={discountModel.percents} onChange={e => setDiscountModel({...discountModel, percents: e.target.value})}/>
                 </div>
             </Modal>
 

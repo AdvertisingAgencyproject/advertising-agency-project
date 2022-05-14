@@ -18,9 +18,8 @@ const FavorList = observer(() => {
         });
     }, []);
 
-    const openModal = (favorId, favorPrice) => {
+    const openModal = favorId => {
         setfavorOrderModel({ favorId, userId : authStore.getUserId() });
-        setSelectedfavorPrice(favorPrice);
         setIsModalVisible(true);
     }
 
@@ -41,7 +40,7 @@ const FavorList = observer(() => {
                 <div className="px-5 py-3 grid grid-cols-1">
                     <div className="mb-4 text-black text-xl">Make order</div>
                     <div className="mb-4">
-                        Total price: {selectedfavorPrice} $
+                        Are you sure?
                     </div>
                 </div>
             </Modal>
@@ -53,7 +52,8 @@ const FavorList = observer(() => {
                                id={favor.id}
                                price={favor.price} 
                                title={favor.text} 
-                               type={favor.type} 
+                               type={favor.type}
+                               discountPercents={favor.discountPercents}
                                imagePath={favor.imagePath}
                         />
                     )
