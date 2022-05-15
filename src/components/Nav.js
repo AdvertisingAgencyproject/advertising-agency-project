@@ -32,8 +32,8 @@ const Nav = observer(() => {
                 <div className="col-span-4"></div>
                 <div className="col-span-1"></div>
                 { 
-                    authStore.isAuthenticated 
-                    ? <Link to="/profile" className="col-span-1 text-white text-right">{authStore.getUserEmail()}</Link> 
+                    authStore.isAuthenticated
+                    ? <Link to="/profile" className="col-span-1 text-white text-right">{authStore.getUserEmail()}</Link>
                     : <Link to="/register" className="col-span-1 text-white text-right">Register</Link> 
                 }
 

@@ -7,31 +7,27 @@ import authStore from "../stores/auth.store";
 const UserProfile = observer(() => {
     const [productOrders, setProductOrders] = useState([]);
     const [favorOrders, setFavorOrders] = useState([]);
+
     const productOrdersColumns = [
         {
             title: 'ID',
             dataIndex: 'id',
-            key: 'id'
-        },
-        {
-            title: 'UserID',
-            dataIndex: 'userId',
-            key: 'userId'
+            key: 'productOrderId'
         },
         {
             title: 'ProductID',
             dataIndex: 'productId',
-            key: 'productId'
+            key: 'productOrderProductId'
         },
         {
             title: 'Wanted text',
             dataIndex: 'text',
-            key: 'text'
+            key: 'productOrderText'
         },
         {
             title: 'TotalPrice',
             dataIndex: 'totalPrice',
-            key: 'totalPrice',
+            key: 'productOrderTotalPrice',
             render: ((record, text) => (
                 <div>{record} $</div>
             ))
@@ -39,7 +35,12 @@ const UserProfile = observer(() => {
         {
             title: 'Created',
             dataIndex: 'created',
-            key: 'created'
+            key: 'productOrderCreated',
+            render: (text, record) => (
+                <div>
+                    {text.substring(0, text.length - 8).replace('T', ' ')}
+                </div>
+            )
         }
     ];
 
@@ -47,22 +48,17 @@ const UserProfile = observer(() => {
         {
             title: 'ID',
             dataIndex: 'id',
-            key: 'id'
-        },
-        {
-            title: 'UserID',
-            dataIndex: 'userId',
-            key: 'userId'
+            key: 'favorOrderId'
         },
         {
             title: 'FavorID',
             dataIndex: 'favorId',
-            key: 'favorId'
+            key: 'favorOrderFavorId'
         },
         {
             title: 'TotalPrice',
             dataIndex: 'totalPrice',
-            key: 'totalPrice',
+            key: 'favorOrderTotalPrice',
             render: ((record, text) => (
                 <div>{record} $</div>
             ))
@@ -70,7 +66,12 @@ const UserProfile = observer(() => {
         {
             title: 'Created',
             dataIndex: 'created',
-            key: 'created'
+            key: 'favorOrderCreated',
+            render: (text, record) => (
+                <div>
+                    {text.substring(0, text.length - 8).replace('T', ' ')}
+                </div>
+            )
         }
     ];
 

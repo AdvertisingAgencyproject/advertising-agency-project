@@ -8,7 +8,7 @@ const ProductsAdmin = observer(() => {
 
     const [postModalVisible, setPostModalVisible] = useState(false);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
-    const [productPostModel, setProductPostModel] = useState({ text: '', type: '', base64: '', price: '' });
+    const [productPostModel, setProductPostModel] = useState({ text: '', type: '', base64: '', price: 0 });
     const [productUpdateModel, setProductUpdateModel] = useState({ id: '', text: '', type: '', imagePath: '', price: '' });
     const [products, setProducts] = useState([]);
 
@@ -34,6 +34,11 @@ const ProductsAdmin = observer(() => {
             key: 'price'
         },
         {
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type'
+        },
+        {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
@@ -49,14 +54,37 @@ const ProductsAdmin = observer(() => {
     ];
 
     useEffect(() => {
-        axios.get('https://localhost:7146/api/products').then(response => {
+        axios.get('https://localhost:7146/api/products/all').then(response => {
             setProducts(response.data);
         });
     }, []);
 
     const postProduct = () => {
+        var validationError = false;
+
+        if(productPostModel.base64 === ''){
+            toast.error('Upload an image. That is required!');
+            validationError = true;
+        }
+        if(productPostModel.text === ''){
+            toast.error('Product text is required!');
+            validationError = true;
+        }
+        if(productPostModel.type === ''){
+            toast.error('Product type is required!')
+            validationError = true;
+        }
+        if(productPostModel.price === '' || productPostModel.price === ''){
+            toast.error('Product price is required!')
+            validationError = true;
+        }
+
+        if(validationError){
+            return;
+        }
+
         axios.post('https://localhost:7146/api/product', productPostModel).then(response => {
-            axios.get('https://localhost:7146/api/products').then(response => {
+            axios.get('https://localhost:7146/api/products/all').then(response => {
                 setProducts(response.data);
             });
             toast.success('Product added succesfully');
@@ -68,8 +96,27 @@ const ProductsAdmin = observer(() => {
     }
 
     const updateProduct = product => {
+        var validationError = false;
+
+        if(productUpdateModel.text === ''){
+            toast.error('Product text is required!');
+            validationError = true;
+        }
+        if(productUpdateModel.type === ''){
+            toast.error('Product type is required!')
+            validationError = true;
+        }
+        if(productUpdateModel.price == '' || productUpdateModel.price === ''){
+            toast.error('Product price is required!')
+            validationError = true;
+        }
+
+        if(validationError){
+            return;
+        }
+
         axios.put('https://localhost:7146/api/product', productUpdateModel).then(response => {
-            axios.get('https://localhost:7146/api/products').then(response => {
+            axios.get('https://localhost:7146/api/products/all').then(response => {
                 setProducts(response.data);
             });
             toast.success('Product updated succesfully');
@@ -82,7 +129,7 @@ const ProductsAdmin = observer(() => {
 
     const deleteProduct = productId => {
         axios.delete('https://localhost:7146/api/product/' + productId).then(response => {
-            axios.get('https://localhost:7146/api/products').then(response => {
+            axios.get('https://localhost:7146/api/products/all').then(response => {
                 setProducts(response.data);
             });
             toast.success('Deleted succesfully');

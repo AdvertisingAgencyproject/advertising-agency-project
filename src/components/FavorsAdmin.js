@@ -3,6 +3,7 @@ import axios from "axios";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import favor from "./Favor";
 
 const FavorsAdmin = observer(() => {
 
@@ -10,8 +11,8 @@ const FavorsAdmin = observer(() => {
     const [discountModel, setDiscountModel] = useState({ favorId: '', percents: ''});
     const [postModalVisible, setPostModalVisible] = useState(false);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
-    const [favorPostModel, setfavorPostModel] = useState({ title: '', type: '', base64: '', price: '' });
-    const [favorUpdateModel, setfavorUpdateModel] = useState({ id: '', title: '', type: '', imagePath: '', price: '' });
+    const [favorPostModel, setfavorPostModel] = useState({ title: '', type: '', base64: '', price: 0, isFastOrder: false});
+    const [favorUpdateModel, setfavorUpdateModel] = useState({ id: '', title: '', type: '', imagePath: '', price: ''});
     const [favors, setfavors] = useState([]);
 
     const columns = [
@@ -36,6 +37,11 @@ const FavorsAdmin = observer(() => {
             key: 'price'
         },
         {
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type'
+        },
+        {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
@@ -58,6 +64,29 @@ const FavorsAdmin = observer(() => {
     }, []);
 
     const postfavor = () => {
+        var validationError = false;
+
+        if(favorPostModel.title === ''){
+            toast.error('Title is required!');
+            validationError = true;
+        }
+        if(favorPostModel.type === ''){
+            toast.error('Type is required!');
+            validationError = true;
+        }
+        if(favorPostModel.price === 0 || favorUpdateModel.price === ''){
+            toast.error('Price should be greater than 0!');
+            validationError = true;
+        }
+        if(favorPostModel.base64 === ''){
+            toast.error('Upload an image. That is required!');
+            validationError = true;
+        }
+
+        if(validationError){
+            return;
+        }
+
         axios.post('https://localhost:7146/api/favor', favorPostModel).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
                 setfavors(response.data);
@@ -71,6 +100,26 @@ const FavorsAdmin = observer(() => {
     }
 
     const updatefavor = favor => {
+
+        var validationError = false;
+
+        if(favorUpdateModel.title === ''){
+            toast.error('Title is required!');
+            validationError = true;
+        }
+        if(favorUpdateModel.type === ''){
+            toast.error('Type is required!');
+            validationError = true;
+        }
+        if(favorUpdateModel.price === 0 || favorUpdateModel.price === ''){
+            toast.error('Price should be greater than 0!');
+            validationError = true;
+        }
+
+        if(validationError){
+            return;
+        }
+
         axios.put('https://localhost:7146/api/favor', favorUpdateModel).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
                 setfavors(response.data);

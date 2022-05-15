@@ -7,51 +7,67 @@ import authStore from "../stores/auth.store";
 import Product from "./Product";
 
 const ProductList = observer(() => {
+    const { Option } = Select;
     const [products, setProducts] = useState([]);
     const [productOrderModel, setProductOrderModel] = useState({ productId: '', userId: '', text: '', count: ''});
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedProductPrice, setSelectedProductPrice] = useState(0);
-    const [filters, setFilters] = useState({ searchQuery: '', minPrice: 0, maxPrice: 9999 });
-    const [defaultPrice, setDefaultPrice] = useState({ minPrice: 0, maxPrice: 0 });
-
-    useEffect(() => {
-        if(filters.maxPrice == ''){
-            setFilters({...filters, maxPrice: 9999});
-        }
-        if(filters.minPrice == ''){
-            setFilters({...filters, minPrice: 0});
-        }
-        if(filters.searchQuery == ''){
-            axios.get(`https://localhost:7146/api/products/%default%/${filters.minPrice}/${filters.maxPrice}`).then(response => {
-                setProducts(response.data);
-            });
-            return;
-        }
-        axios.get(`https://localhost:7146/api/products/${filters.searchQuery}/${filters.minPrice}/${filters.maxPrice}`)
-            .then(response => {
-                    setProducts(response.data);
-                }
-            );
-    }, [filters.searchQuery, filters.maxPrice, filters.minPrice]);
+    const [selectedProductPrice, setSelectedProductPrice] = useState(0)
+    const [filters, setFilters] = useState();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [selectedMinPrice, setSelectedMinPrice] = useState(0);
+    const [selectedMaxPrice, setSelectedMaxPrice] = useState(0);
+    const [selectedType, setSelectedType] = useState('all');
+    const [types, setTypes] = useState([]);
 
     useEffect(() => {
         axios.get('https://localhost:7146/api/product/filter').then(response => {
-            setFilters({
-                minPrice: response.data.minPrice,
-                maxPrice: response.data.maxPrice,
-                searchQuery: ''
-            });
-            setDefaultPrice({
-                minPrice: response.data.minPrice,
-                maxPrice: response.data.maxPrice
-            });
+            setFilters(response.data);
+            setTypes(response.data.types);
+            setSelectedMaxPrice(response.data.maxPrice);
+            setSelectedMinPrice(response.data.minPrice);
         });
-        axios.get(`https://localhost:7146/api/products/%default%/${filters.minPrice}/${filters.maxPrice}`)
-             .then(response => {
-                 setProducts(response.data);
-             }
-        );
+        axios.get('https://localhost:7146/api/products/all').then(response => {
+            setProducts(response.data);
+        });
     }, []);
+
+    const handleSearch = () => {
+        var search = '%default%';
+        if(searchQuery !== ''){
+            search = searchQuery;
+        }
+        axios.get(`https://localhost:7146/api/products/${search}/${selectedType}/${selectedMinPrice}/${selectedMaxPrice}`).then(response => {
+            setProducts(response.data);
+            console.log(response.data);
+        });
+    }
+
+    const handleSearchInputChange = e => {
+        var search = '%default%';
+        if(e.target.value === ''){
+            axios.get(`https://localhost:7146/api/products/${search}/${selectedType}/${selectedMinPrice}/${selectedMaxPrice}`).then(response => {
+                setProducts(response.data);
+            });
+        }
+        setSearchQuery(e.target.value);
+    }
+
+    const handleSelectedMaxPriceChange = e => {
+        if(e.target.value = ''){
+            setSelectedMaxPrice(filters.maxPrice);
+        }
+    }
+
+    const handleSelectedMinPriceChange = e => {
+        if(e.target.value = ''){
+            setSelectedMinPrice(filters.minPrice);
+        }
+    }
+
+    const handleTypeSelectChange = value => {
+        setSelectedType(value);
+    }
 
     const openModal = (productId, productPrice) => {
         setProductOrderModel({ ...productOrderModel, productId, userId : authStore.getUserId() });
@@ -60,6 +76,22 @@ const ProductList = observer(() => {
     }
 
     const orderProduct = () => {
+        var validationError = false;
+
+        if(productOrderModel.count === 0 || productOrderModel.count === ''){
+            toast.error('Count should be greater than 0!');
+            validationError = true;
+        }
+
+        if(productOrderModel.text === ''){
+            toast.error('Wanted text is required!');
+            validationError = true;
+        }
+
+        if(validationError){
+            return;
+        }
+
         axios.post('https://localhost:7146/api/product/order', productOrderModel).then(response => {
             setProductOrderModel({ productId: '', userId: '', text: '', count: '' });
             setIsModalVisible(false);
@@ -72,28 +104,41 @@ const ProductList = observer(() => {
     return(
         <div className="product-list min-h-screen bg-gray-200">
             <div className="pt-24 container mx-auto">
-                <div className="block">
-                    <div className="text-black text-lg mb-2">Filters</div>
-                    <input className="mb-4 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                <div className="block mb-10">
+                    <input className="w-1/3 mb-4 shadow appearance-none border py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           type="text"
+                           value={searchQuery}
                            placeholder="Search"
-                           value={filters.searchQuery}
-                           onChange={e => setFilters({...filters, searchQuery: e.target.value})}
+                           onChange={handleSearchInputChange}
                     />
-                    <div className="w-1/2">
-                        <div className="text-black text-lg mb-2">Price (min-max)</div>
-                        <input className="mb-4 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                               value={filters.minPrice}
-                               type="number"
-                               onChange={e => setFilters({...filters, minPrice: e.target.value})}
-                               placeholder="Min price"
-                        />
-                        <input className="mb-4 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                               value={filters.maxPrice}
-                               type="number"
-                               onChange={e => setFilters({...filters, maxPrice: e.target.value})}
-                               placeholder="Max price"
-                        />
-                    </div>
+                    <button className="bg-green-600 text-white px-3 py-1" onClick={handleSearch}>Search & apply filters</button>
+                </div>
+                <div className="grid grid-cols-2 w-1/3">
+                    <div className="text-black text-lg text-left">Min price:</div>
+                    <input className="mb-4 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           type="number"
+                           value={selectedMinPrice}
+                           onChange={e => setSelectedMinPrice(e.target.value)}
+                    />
+                    <div className="text-black text-lg text-left">Max price:</div>
+                    <input className="mb-4 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           type="number"
+                           value={selectedMaxPrice}
+                           onChange={e => setSelectedMaxPrice(e.target.value)}
+                    />
+                </div>
+                <div className="grid grid-cols-2 items-center w-1/3">
+                    <div className="text-black text-lg text-left">Polygraphy type:</div>
+                    <Select style={{ width: 120 }} defaultValue="all" onChange={handleTypeSelectChange}>
+                        <Option value="all">All</Option>
+                        {
+                            types.map((record, index) => (
+                                <Option key={index} value={record}>
+                                    {record}
+                                </Option>
+                            ))
+                        }
+                    </Select>
                 </div>
             </div>
             <div className="product-list pt-24 grid grid-cols-4 gap-10 container mx-auto">
