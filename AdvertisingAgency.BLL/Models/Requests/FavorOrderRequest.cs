@@ -4,4 +4,5 @@ public class FavorOrderRequest
 {
     public string UserId { get; set; }
     public string FavorId { get; set; }
+    public bool? IsFastOrder { get; set; }
 }

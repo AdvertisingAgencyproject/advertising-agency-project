@@ -33,16 +33,22 @@ public class ProductService : IProductService
         return entity.MapToResponse();
     }
 
-    public async Task<List<ProductResponse>> GetProductsAsync(ProductFilterRequest model)
+    public async Task<List<ProductResponse>> GetProductsAsync(string searchQuery, string typeFilter, 
+                                                              int minPrice, int maxPrice)
     {
         var entities = await _unitOfWork.ProductRepository.GetAllAsync();
-        if (model.SearchQuery != "%default%")
+        if (searchQuery != "%default%")
         {
-            entities = entities.Where(t => t.Text.ToUpper().Contains(model.SearchQuery.ToUpper()))
+            entities = entities.Where(t => t.Text.ToUpper().Contains(searchQuery.ToUpper()))
                                .ToList();
         }
+
+        if (typeFilter != "all")
+        {
+            entities = entities.Where(t => t.Type == typeFilter).ToList();
+        }
         
-        entities = entities.Where(t => t.Price >= model.MinPrice && t.Price <= model.MaxPrice)
+        entities = entities.Where(t => t.Price >= minPrice && t.Price <= maxPrice)
                            .ToList();
         
         return entities.MapToResponseList();
@@ -65,12 +71,13 @@ public class ProductService : IProductService
     public async Task<ProductFilterResponse> GetProductFiltersAsync()
     {
         var products = await _unitOfWork.ProductRepository.GetAllAsync();
-        var types = String.Join('%', products.Select(t => t.Type));
+        var types = products.Select(t => t.Type).Distinct().ToList();
             
         return new ProductFilterResponse
         {
             MinPrice = products.Select(t => t.Price).Min(),
-            MaxPrice = products.Select(t => t.Price).Max()
+            MaxPrice = products.Select(t => t.Price).Max(),
+            Types = types
         };
     }
 

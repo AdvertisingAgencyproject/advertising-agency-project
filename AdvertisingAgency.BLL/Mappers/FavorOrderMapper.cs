@@ -11,7 +11,8 @@ public static class FavorOrderMapper
         return new FavorOrder
         {
             UserId = model.UserId,
-            FavorId = model.FavorId
+            FavorId = model.FavorId,
+            IsFastOrder = model.IsFastOrder
         };
     }
 
@@ -23,7 +24,8 @@ public static class FavorOrderMapper
             Created = entity.Created,
             FavorId = entity.FavorId,
             UserId = entity.UserId,
-            TotalPrice = entity.TotalPrice
+            TotalPrice = entity.TotalPrice,
+            IsFastOrder = entity.IsFastOrder
         };
     }
 
@@ -35,7 +37,8 @@ public static class FavorOrderMapper
             Created = t.Created,
             FavorId = t.FavorId,
             UserId = t.UserId,
-            TotalPrice = t.TotalPrice
+            TotalPrice = t.TotalPrice,
+            IsFastOrder = t.IsFastOrder
         }).ToList();
     }
 }

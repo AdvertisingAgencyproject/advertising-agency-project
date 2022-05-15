@@ -7,4 +7,5 @@ public interface IFavorOrderService
 {
     Task CreateFavorOrderAsync(FavorOrderRequest model);
     Task<List<FavorOrderResponse>> GetUserFavorOrdersAsync(string userId);
+    Task<List<FavorOrderResponse>> GetAllFavorOrdersAsync();
 }

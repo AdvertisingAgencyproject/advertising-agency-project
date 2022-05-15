@@ -31,6 +31,11 @@ public class FavorOrderService : IFavorOrderService
         {
             entity.TotalPrice = favor.Price;
         }
+
+        if (model.IsFastOrder == true)
+        {
+            entity.TotalPrice += 5;
+        }
         
         var result = await _unitOfWork.FavorOrderRepository.InsertAsync(entity);
         if (!result) throw new HttpException(HttpStatusCode.InternalServerError, "Server error");
@@ -39,6 +44,12 @@ public class FavorOrderService : IFavorOrderService
     public async Task<List<FavorOrderResponse>> GetUserFavorOrdersAsync(string userId)
     {
         var entities = await _unitOfWork.FavorOrderRepository.GetManyByExpressionAsync(t => t.UserId == userId);
+        return entities.MapToResponseList();
+    }
+
+    public async Task<List<FavorOrderResponse>> GetAllFavorOrdersAsync()
+    {
+        var entities = await _unitOfWork.FavorOrderRepository.GetAllAsync();
         return entities.MapToResponseList();
     }
 }

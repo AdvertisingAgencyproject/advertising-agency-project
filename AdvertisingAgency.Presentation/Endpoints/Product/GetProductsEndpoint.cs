@@ -5,7 +5,7 @@ using FastEndpoints;
 
 namespace AdvertisingAgency.Presentation.Endpoints.Product;
 
-public class GetProductsEndpoint : Endpoint<ProductFilterRequest, List<ProductResponse>>
+public class GetProductsEndpoint : EndpointWithoutRequest
 {
     private readonly IProductService _productService;
 
@@ -14,10 +14,16 @@ public class GetProductsEndpoint : Endpoint<ProductFilterRequest, List<ProductRe
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("api/products/{searchQuery}/{minPrice}/{maxPrice}");
+        Routes("api/products/{searchQuery}/{typeFilter}/{minPrice}/{maxPrice}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(ProductFilterRequest req, CancellationToken ct) 
-        => await SendAsync(await _productService.GetProductsAsync(req));
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var searchQuery = Route<string>("searchQuery");
+        var typeFilter = Route<string>("typeFilter");
+        var minPrice = Route<int>("minPrice");
+        var maxPrice = Route<int>("maxPrice");
+        await SendAsync(await _productService.GetProductsAsync(searchQuery, typeFilter, minPrice, maxPrice));
+    }
 }

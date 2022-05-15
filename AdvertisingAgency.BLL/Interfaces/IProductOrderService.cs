@@ -8,4 +8,5 @@ public interface IProductOrderService
 {
     Task CreateProductOrderAsync(ProductOrderRequest model);
     Task<List<ProductOrderResponse>> GetUserProductOrdersAsync(string userId);
+    Task<List<ProductOrderResponse>> GetAllProductOrdersAsync();
 }

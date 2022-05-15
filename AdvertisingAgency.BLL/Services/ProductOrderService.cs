@@ -33,4 +33,10 @@ public class ProductOrderService : IProductOrderService
         var entities = await _unitOfWork.ProductOrderRepository.GetManyByExpressionAsync(t => t.UserId == userId);
         return entities.MapToResponseList();
     }
+
+    public async Task<List<ProductOrderResponse>> GetAllProductOrdersAsync()
+    {
+        var entities = await _unitOfWork.ProductOrderRepository.GetAllAsync();
+        return entities.MapToResponseList();
+    }
 }

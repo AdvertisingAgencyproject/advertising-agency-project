@@ -13,8 +13,8 @@ public class GetProductsWithoutFiltersEndpoint : EndpointWithoutRequest<List<Pro
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("api/products");
-        Roles("admin", "manager");
+        Routes("api/products/all");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct) 
