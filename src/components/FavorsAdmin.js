@@ -11,9 +11,9 @@ const FavorsAdmin = observer(() => {
     const [discountModel, setDiscountModel] = useState({ favorId: '', percents: ''});
     const [postModalVisible, setPostModalVisible] = useState(false);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
-    const [favorPostModel, setfavorPostModel] = useState({ title: '', type: '', base64: '', price: 0, isFastOrder: false});
-    const [favorUpdateModel, setfavorUpdateModel] = useState({ id: '', title: '', type: '', imagePath: '', price: ''});
-    const [favors, setfavors] = useState([]);
+    const [favorPostModel, setFavorPostModel] = useState({ title: '', type: '', base64: '', price: '', isFastOrder: false});
+    const [favorUpdateModel, setFavorUpdateModel] = useState({ id: '', title: '', type: '', imagePath: '', price: ''});
+    const [favors, setFavors] = useState([]);
 
     const columns = [
         {
@@ -47,10 +47,10 @@ const FavorsAdmin = observer(() => {
             render: (text, record) => (
                 <div className="p-2">
                     <button onClick={() => {
-                        setfavorUpdateModel(record);
+                        setFavorUpdateModel(record);
                         setUpdateModalVisible(true);
                     }} className="bg-amber-500 text-white px-3 py-1 rounded mr-2">Update</button>
-                    <button onClick={() => deletefavor(record.id)} className="bg-red-500 text-white px-3 py-1 rounded mr-2">Delete</button>
+                    <button onClick={() => deleteFavor(record.id)} className="bg-red-500 text-white px-3 py-1 rounded mr-2">Delete</button>
                     { record.discountPercents === null && <button onClick={() => openDiscountAddModal(record.id)} className="bg-green-500 text-white px-3 py-1 rounded">Set discount</button> }
                 </div>
             )
@@ -59,11 +59,12 @@ const FavorsAdmin = observer(() => {
 
     useEffect(() => {
         axios.get('https://localhost:7146/api/favors').then(response => {
-            setfavors(response.data);
+            setFavors(response.data);
         });
     }, []);
 
-    const postfavor = () => {
+    const postFavor = () => {
+        console.log(favorPostModel);
         var validationError = false;
 
         if(favorPostModel.title === ''){
@@ -74,7 +75,7 @@ const FavorsAdmin = observer(() => {
             toast.error('Type is required!');
             validationError = true;
         }
-        if(favorPostModel.price === 0 || favorUpdateModel.price === ''){
+        if(favorPostModel.price === ''){
             toast.error('Price should be greater than 0!');
             validationError = true;
         }
@@ -89,17 +90,17 @@ const FavorsAdmin = observer(() => {
 
         axios.post('https://localhost:7146/api/favor', favorPostModel).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
-                setfavors(response.data);
+                setFavors(response.data);
             });
             toast.success('favor added succesfully');
             setPostModalVisible(false);
-            setfavorPostModel({ title: '', type: '', base64: '', price: '' });
+            setFavorPostModel({ title: '', type: '', base64: '', price: '' });
         }).catch(error => {
             toast.error('Server error');
         });
     }
 
-    const updatefavor = favor => {
+    const updateFavor = favor => {
 
         var validationError = false;
 
@@ -111,7 +112,7 @@ const FavorsAdmin = observer(() => {
             toast.error('Type is required!');
             validationError = true;
         }
-        if(favorUpdateModel.price === 0 || favorUpdateModel.price === ''){
+        if(favorUpdateModel.price === ''){
             toast.error('Price should be greater than 0!');
             validationError = true;
         }
@@ -122,22 +123,22 @@ const FavorsAdmin = observer(() => {
 
         axios.put('https://localhost:7146/api/favor', favorUpdateModel).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
-                setfavors(response.data);
+                setFavors(response.data);
             });
             toast.success('favor updated succesfully');
-            setfavorUpdateModel({ id: '', title: '', type: '', imagePath: '', price: '' });
+            setFavorUpdateModel({ id: '', title: '', type: '', imagePath: '', price: '' });
             setUpdateModalVisible(false);
         }).catch(error => {
             toast.error('Server error');
         });
     }
 
-    const deletefavor = favorId => {
+    const deleteFavor = favorId => {
         axios.delete('https://localhost:7146/api/favor/' + favorId).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
-                setfavors(response.data);
+                setFavors(response.data);
             });
-            toast.success('Deleted succesfully');
+            toast.success('Deleted successfully');
         }).catch(error => {
             toast.error('Server error');
         });
@@ -151,7 +152,7 @@ const FavorsAdmin = observer(() => {
     const addDiscountToFavor = () => {
         axios.post('https://localhost:7146/api/favor/discount', discountModel).then(response => {
             axios.get('https://localhost:7146/api/favors').then(response => {
-                setfavors(response.data);
+                setFavors(response.data);
             });
         });
         setDiscountModalVisible(false);
@@ -163,7 +164,7 @@ const FavorsAdmin = observer(() => {
         reader.readAsDataURL(e.target.files[0]);
         reader.onload = function () {
             console.log(reader.result);
-            setfavorPostModel({ ...favorPostModel, base64: reader.result });
+            setFavorPostModel({ ...favorPostModel, base64: reader.result });
             document.getElementById('file-input').value = null;
         };
         reader.onerror = function (error) {
@@ -173,7 +174,7 @@ const FavorsAdmin = observer(() => {
 
     return(
         <div className="favors-admin">
-            <Modal visible={updateModalVisible} onOk={updatefavor} onCancel={() => setUpdateModalVisible(false)}>
+            <Modal visible={updateModalVisible} onOk={updateFavor} onCancel={() => setUpdateModalVisible(false)}>
                 <div className="px-5 py-3">
                     <div className="mb-4 text-xl">
                         Update favor
@@ -183,7 +184,7 @@ const FavorsAdmin = observer(() => {
                                type="text" 
                                value={favorUpdateModel.title} 
                                placeholder="Title" 
-                               onChange={e => setfavorUpdateModel({ ...favorUpdateModel, title: e.target.value })}
+                               onChange={e => setFavorUpdateModel({ ...favorUpdateModel, title: e.target.value })}
                         />
                     </div>
                     <div className="mb-4">
@@ -191,7 +192,7 @@ const FavorsAdmin = observer(() => {
                                type="text" 
                                value={favorUpdateModel.type} 
                                placeholder="Favor type" 
-                               onChange={e => setfavorUpdateModel({ ...favorUpdateModel, type: e.target.value })}
+                               onChange={e => setFavorUpdateModel({ ...favorUpdateModel, type: e.target.value })}
                         />
                     </div>
                     <div className="mb-4">
@@ -199,12 +200,12 @@ const FavorsAdmin = observer(() => {
                                type="number" 
                                value={favorUpdateModel.price} 
                                placeholder="Favor price" 
-                               onChange={e => setfavorUpdateModel({ ...favorUpdateModel, price: e.target.value })}
+                               onChange={e => setFavorUpdateModel({ ...favorUpdateModel, price: e.target.value })}
                         />
                     </div>
                 </div>
             </Modal>
-            <Modal visible={postModalVisible} onOk={postfavor} onCancel={() => setPostModalVisible(false)}>
+            <Modal visible={postModalVisible} onOk={postFavor} onCancel={() => setPostModalVisible(false)}>
                 <div className="px-5 py-3">
                     <div className="mb-4 text-black text-xl">Add favor</div>
                     <div className="mb-4">
@@ -212,7 +213,7 @@ const FavorsAdmin = observer(() => {
                                type="text" 
                                value={favorPostModel.title} 
                                placeholder="Title" 
-                               onChange={e => setfavorPostModel({ ...favorPostModel, title: e.target.value })}
+                               onChange={e => setFavorPostModel({ ...favorPostModel, title: e.target.value })}
                         />
                     </div>
                     <div className="mb-4">
@@ -229,7 +230,7 @@ const FavorsAdmin = observer(() => {
                                type="text" 
                                value={favorPostModel.type} 
                                placeholder="Favor type" 
-                               onChange={e => setfavorPostModel({ ...favorPostModel, type: e.target.value })}
+                               onChange={e => setFavorPostModel({ ...favorPostModel, type: e.target.value })}
                         />
                     </div>
                     <div className="mb-4">
@@ -237,7 +238,7 @@ const FavorsAdmin = observer(() => {
                                type="number" 
                                value={favorPostModel.price} 
                                placeholder="Favor price" 
-                               onChange={e => setfavorPostModel({ ...favorPostModel, price: e.target.value })}
+                               onChange={e => setFavorPostModel({ ...favorPostModel, price: e.target.value })}
                         />
                     </div>
                 </div>

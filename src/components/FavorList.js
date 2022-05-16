@@ -8,27 +8,27 @@ import Favor from "./Favor";
 import { Radio } from 'antd';
 
 const FavorList = observer(() => {
-    const [favors, setfavors] = useState([]);
-    const [favorOrderModel, setfavorOrderModel] = useState({ favorId: '', userId: ''});
+    const [favors, setFavors] = useState([]);
+    const [favorOrderModel, setFavorOrderModel] = useState({ favorId: '', userId: ''});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [fastOrder, setFastOrder] = useState(false);
 
     useEffect(() => {
         axios.get('https://localhost:7146/api/favors').then(response => {
-            setfavors(response.data);
+            setFavors(response.data);
         });
     }, []);
 
     const openModal = favorId => {
-        setfavorOrderModel({ favorId, userId : authStore.getUserId() });
+        setFavorOrderModel({ favorId, userId : authStore.getUserId() });
         setIsModalVisible(true);
     }
 
     const orderFavor = () => {
         axios.post('https://localhost:7146/api/favor/order', {...favorOrderModel, isFastOrder: fastOrder}).then(response => {
-            setfavorOrderModel({ favorId: '', userId: '' });
+            setFavorOrderModel({ favorId: '', userId: '' });
             setIsModalVisible(false);
-            toast.success('Ordered succesfully');
+            toast.success('Ordered successfully');
         }).catch(error => {
             toast.error('Server error');
         });
@@ -60,7 +60,7 @@ const FavorList = observer(() => {
                                openModal={openModal}
                                id={favor.id}
                                price={favor.price} 
-                               title={favor.text} 
+                               title={favor.title}
                                type={favor.type}
                                discountPercents={favor.discountPercents}
                                imagePath={favor.imagePath}
